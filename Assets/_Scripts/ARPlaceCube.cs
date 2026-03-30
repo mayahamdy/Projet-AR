@@ -5,10 +5,16 @@ using UnityEngine.EventSystems;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
+[RequireComponent(typeof(ARRaycastManager))]
 public class ARPlaceCube : MonoBehaviour
 {
-    [SerializeField] private ARRaycastManager rayCastManager;
+    private ARRaycastManager rayCastManager;
     private bool isPlacing;
+
+    private void Awake()
+    {
+        rayCastManager = GetComponent<ARRaycastManager>();
+    }
 
     private void Update()
     {
