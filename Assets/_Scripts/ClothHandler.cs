@@ -17,7 +17,7 @@ public class ClothHandler : MonoBehaviour
         renderer.enabled = true;
     }
 
-    public void HideCLoth()
+    public void HideCloth()
     {
         renderer.enabled = false;
     }
@@ -27,5 +27,6 @@ public enum clothType
 {
     T_SHIRT,
     PULL,
-    ROBE
+    ROBE,
+    NONE
 }
