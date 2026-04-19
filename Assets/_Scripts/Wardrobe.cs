@@ -26,4 +26,9 @@ public class Wardrobe : StaticInstance<Wardrobe>
     {
         clothesDict[selectedClothType].gameObject.SetActive(true);
     }
+
+    public void ShowCloth(clothType clothType)
+    {
+        clothesDict[clothType].gameObject.SetActive(true);
+    }
 }

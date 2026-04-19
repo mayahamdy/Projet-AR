@@ -1,15 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
 [RequireComponent(typeof(ARRaycastManager))]
-public class ARPlaceCube : MonoBehaviour
+public class ARPlaceAvatar : MonoBehaviour
 {
+    public GameObject Avatar;
+    public GameObject Wardrobe;
+    public Vector3 WardrobeOffset;
+    public Vector3 WardrobeRotationOffset;
     private ARRaycastManager rayCastManager;
     private bool isPlacing;
+    private bool isPlaced;
+    private GameObject placedAvatar;
+    private GameObject placedWardrobe;
 
     private void Awake()
     {
@@ -38,6 +46,8 @@ public class ARPlaceCube : MonoBehaviour
 
     void PlaceObject(Vector2 touchPosition)
     {
+        if (isPlaced) return;
+
         var rayHits = new List<ARRaycastHit>();
 
         rayCastManager.Raycast(touchPosition, rayHits, TrackableType.AllTypes);
@@ -46,7 +56,28 @@ public class ARPlaceCube : MonoBehaviour
         {
             Vector3 hitPosePosition = rayHits[0].pose.position;
             Quaternion hitPoseRotation = rayHits[0].pose.rotation;
-            Instantiate(rayCastManager.raycastPrefab, hitPosePosition, hitPoseRotation);
+
+            if (placedAvatar != null)
+            {
+                Destroy(placedAvatar);
+            }
+            if (placedWardrobe != null)
+            {
+                Destroy(placedWardrobe);
+            }
+
+            placedAvatar = Instantiate(Avatar, hitPosePosition, hitPoseRotation);
+            placedWardrobe = Instantiate(Wardrobe, hitPosePosition, hitPoseRotation);
+
+            Vector3 directionToCamera = Camera.main.transform.position - placedAvatar.transform.position;
+            directionToCamera.y = 0;
+            placedAvatar.transform.rotation = Quaternion.LookRotation(directionToCamera);
+
+            placedWardrobe.transform.rotation = placedAvatar.transform.rotation * Quaternion.Euler(WardrobeRotationOffset);
+
+            placedWardrobe.transform.position = placedAvatar.transform.position + placedAvatar.transform.TransformDirection(WardrobeOffset);
+
+            isPlaced = true;
         }
 
         StartCoroutine(SetIsPlacingFalseWithDelay());

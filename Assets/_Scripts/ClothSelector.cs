@@ -28,10 +28,6 @@ public class ClothSelector : MonoBehaviour
         {
             if (hit.collider.gameObject == gameObject)
             {
-                if (Wardrobe.Instance.selectedClothType != clothType.NONE)
-                {
-                    Wardrobe.Instance.ShowCloth();
-                }
                 Wardrobe.Instance.selectedClothType = clothType;
                 Debug.Log("Selected: " + clothType);
             }

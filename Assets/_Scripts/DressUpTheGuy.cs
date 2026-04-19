@@ -22,27 +22,23 @@ public class DressUpTheGuy : StaticInstance<DressUpTheGuy>
     {
         if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
         {
-            if (Wardrobe.Instance.selectedClothType == clothType.NONE)
-            {
-                Debug.Log("Aucun vetement selectionné");
-                return;
-            }
             PutClothOn(Input.GetTouch(0).position);
         }
 
         if (Input.GetMouseButtonDown(0))
         {
-            if (Wardrobe.Instance.selectedClothType == clothType.NONE)
-            {
-                Debug.Log("Aucun vetement selectionné");
-                return;
-            }
             PutClothOn(Input.mousePosition);
         }
     }
 
     void PutClothOn(Vector2 screenPosition)
     {
+        if (Wardrobe.Instance.selectedClothType == clothType.NONE)
+        {
+            Debug.Log("Aucun vetement selectionné");
+            return;
+        }
+
         Ray ray = Camera.main.ScreenPointToRay(screenPosition);
         RaycastHit hit;
 
@@ -57,9 +53,12 @@ public class DressUpTheGuy : StaticInstance<DressUpTheGuy>
                 if (currentCloth != clothType.NONE)
                 {
                     clothesDict[currentCloth].HideCloth();
+                    Wardrobe.Instance.ShowCloth(currentCloth);
                 }
 
-                Debug.Log("Habillé avec " + Wardrobe.Instance.selectedClothType);
+                currentCloth = Wardrobe.Instance.selectedClothType;
+
+                Debug.Log("Habillé avec " + currentCloth);
             }
         }
     }
