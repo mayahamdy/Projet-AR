@@ -5,15 +5,18 @@ using UnityEngine;
 public class WardrobeDoor : MonoBehaviour
 {
     public Animator animator;
+    bool isMoving;
     bool isDoorOpen;
     void Update()
     {
+        if (isMoving) return;
+
         if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
         {
             OpenDoor(Input.GetTouch(0).position);
         }
 
-        if (Input.GetMouseButtonDown(0))
+        else if (Input.GetMouseButtonDown(0))
         {
             OpenDoor(Input.mousePosition);
         }
@@ -28,6 +31,7 @@ public class WardrobeDoor : MonoBehaviour
         {
             if (hit.collider.gameObject == gameObject)
             {
+                isMoving = true;
                 if (!isDoorOpen)
                 {
                     Debug.Log("Opening door");
@@ -41,5 +45,13 @@ public class WardrobeDoor : MonoBehaviour
                 isDoorOpen = !isDoorOpen;
             }
         }
+
+        StartCoroutine(SetIsMovingFalseWithDelay());
+    }
+
+    IEnumerator SetIsMovingFalseWithDelay()
+    {
+        yield return new WaitForSeconds(0.5f);
+        isMoving = false;
     }
 }

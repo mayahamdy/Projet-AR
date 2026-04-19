@@ -8,6 +8,7 @@ public class DressUpTheGuy : StaticInstance<DressUpTheGuy>
 {
     public ClothHandler[] clothes;
     public Dictionary<clothType, ClothHandler> clothesDict;
+    bool isDressing = false;
 
     public clothType currentCloth;
 
@@ -20,12 +21,17 @@ public class DressUpTheGuy : StaticInstance<DressUpTheGuy>
 
     void Update()
     {
+        if (isDressing)
+        {
+            return;
+        }
+
         if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
         {
             PutClothOn(Input.GetTouch(0).position);
         }
 
-        if (Input.GetMouseButtonDown(0))
+        else if (Input.GetMouseButtonDown(0))
         {
             PutClothOn(Input.mousePosition);
         }
@@ -46,6 +52,7 @@ public class DressUpTheGuy : StaticInstance<DressUpTheGuy>
         {
             if (hit.collider.gameObject == gameObject)
             {
+                isDressing = true;
                 clothesDict[Wardrobe.Instance.selectedClothType].ShowCloth();
 
                 Wardrobe.Instance.HideCloth();
@@ -57,9 +64,18 @@ public class DressUpTheGuy : StaticInstance<DressUpTheGuy>
                 }
 
                 currentCloth = Wardrobe.Instance.selectedClothType;
+                Wardrobe.Instance.selectedClothType = clothType.NONE;
 
                 Debug.Log("Habillé avec " + currentCloth);
             }
         }
+
+        StartCoroutine(SetIsDressingFalseWithDelay());
+    }
+
+    IEnumerator SetIsDressingFalseWithDelay()
+    {
+        yield return new WaitForSeconds(0.5f);
+        isDressing = false;
     }
 }
